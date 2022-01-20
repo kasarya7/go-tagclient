@@ -1,0 +1,945 @@
+---
+swagger: "2.0"
+info:
+  description: "tag-api OpenAPI doc"
+  version: "1.0"
+  title: "tag-api OpenAPI Doc"
+  contact: {}
+  license:
+    name: "EasyStack OpenAPI License."
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/apis/tag-api/"
+paths:
+  /domains/:
+    get:
+      tags:
+      - "Domains"
+      summary: "获取部门信息"
+      description: "获取部门信息"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.DepartmentGetDomainRes"
+        "400":
+          description: "获取部门失败"
+          schema:
+            $ref: "#/definitions/model.DepartmentGetDomainsErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+  /producttypes/:
+    get:
+      tags:
+      - "ProductTypes"
+      summary: "获取云产品资源类型"
+      description: "获取当前已注册的云产品资源类型"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.TrtsGetRes"
+        "400":
+          description: "获取资源类型失败"
+          schema:
+            $ref: "#/definitions/model.TrtsGetErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+  /projects/:
+    get:
+      tags:
+      - "Projects"
+      summary: "获取项目信息"
+      description: "获取项目信息"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "query"
+        description: "部门id"
+        required: false
+        type: "string"
+        x-exportParamName: "DomainId"
+        x-optionalDataType: "String"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.DepartmentGetProjectRes"
+        "400":
+          description: "获取项目失败"
+          schema:
+            $ref: "#/definitions/model.DepartmentGetProjectsErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+  /resources/:
+    post:
+      tags:
+      - "resources"
+      summary: "根据标签、部门、项目信息等检索资源信息"
+      description: "根据标签、部门、项目信息等检索资源信息"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        description: "标签信息"
+        required: true
+        schema:
+          $ref: "#/definitions/model.ResourceSearchReq"
+        x-exportParamName: "Data"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.ResourceSearchRes"
+        "400":
+          description: "检索资源失败"
+          schema:
+            $ref: "#/definitions/model.ResourceSearchErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+  /resources/action/:
+    post:
+      tags:
+      - "resources"
+      summary: "绑定或者解绑标签"
+      description: "# 绑定或者解绑标签\n## Errors\n+ ## BOUNDORUNBOUNDTAG_ERR\n      绑定标签失\
+        败\n      HTTP Status Code: 400\n  #### eg:\n  ```\n  {\n   \"code\":\"BOUNDORUNBOUNDTAG_ERR\"\
+        ,     \n   \"message\":\"Bound Or UnBound Tag Fail.\",\n   \"data\":[\n  \
+        \          {\"error_resource\": \"tagtest1\",\n             \"error_resource_type\"\
+        :\"OS_Tag\",\n             \"error_tags\":[tagtest1,tagtest2],\n         \
+        \    \"error_reason\":\"Bound Or UnBound Fail.\"\n            },\n       \
+        \     {\"error_resource\": \"tagtest2\",\n             \"error_resource_type\"\
+        :\"OS_Tag\",\n             \"error_tags\":[tagtest3,tagtest4],\n         \
+        \    \"error_reason\":\"The resource binding labels exceed 20.\"\n       \
+        \     },\n             {\"error_resource\": \"tagtest3\",\n             \"\
+        error_resource_type\":\"OS_Tag\",\n             \"error_tags\":[tagtest5,tagtest6],\n\
+        \             \"error_reason\":\"This resource is being operated by another\
+        \ user and cannot be bound. Please try again.\"\n            }\n         \
+        \  ]\n  }\n  ```"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "resource"
+        description: "需要绑定的标签信息和资源信息"
+        required: true
+        schema:
+          $ref: "#/definitions/model.ResourceBoundOrUnBoundTagReq"
+        x-exportParamName: "Resource"
+      responses:
+        "204":
+          description: "绑定成功"
+        "400":
+          description: "绑定失败"
+          schema:
+            allOf:
+            - $ref: "#/definitions/model.ResourceBoundOrUnboundTagErrResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.ResourceBoundOrUnboundTagErrList"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+  /resources/tags/:
+    post:
+      tags:
+      - "resources"
+      summary: "根据资源检索资源绑定的标签信息"
+      description: "根据资源检索资源绑定的标签信息"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        description: "资源信息"
+        required: true
+        schema:
+          $ref: "#/definitions/model.ResourceGetBoundTagReq"
+        x-exportParamName: "Data"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.ResourceGetBoundTagsRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+  /tags/:
+    get:
+      tags:
+      - "Tag"
+      summary: "获取标签列表"
+      description: "获取标签列表 (根据条件过滤标签)"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "query"
+        description: "标签所属部门id"
+        required: false
+        type: "string"
+        x-exportParamName: "DomainId"
+        x-optionalDataType: "String"
+      - name: "project_id"
+        in: "query"
+        description: "标签所属项目id"
+        required: false
+        type: "string"
+        x-exportParamName: "ProjectId"
+        x-optionalDataType: "String"
+      - name: "user"
+        in: "query"
+        description: "创建标签用户id"
+        required: false
+        type: "string"
+        x-exportParamName: "User"
+        x-optionalDataType: "String"
+      - name: "color"
+        in: "query"
+        description: "标签颜色"
+        required: false
+        type: "string"
+        x-exportParamName: "Color"
+        x-optionalDataType: "String"
+      - name: "res_num"
+        in: "query"
+        description: "标签绑定资源数"
+        required: false
+        type: "boolean"
+        default: false
+        x-exportParamName: "ResNum"
+        x-optionalDataType: "Bool"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.TagGetRes"
+        "400":
+          description: "获取标签失败"
+          schema:
+            $ref: "#/definitions/model.TagGetErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+    post:
+      tags:
+      - "Tag"
+      summary: "创建标签"
+      description: "# 创建一个新的标签\n## Errors\n+ ## TAGALREADYEXISTS_ERR\n      要创建的标签\
+        已经存在\n      HTTP Status Code: 400\n  #### eg:\n  ```\n  {\n   \"code\":\"\
+        TAGALREADYEXISTS_ERR\",     \n   \"message\":\"Conflict TagTest already exists.\"\
+        \n  }\n  ```\n+ ### MORETHANPROJECTTAGMAXNUM_ERR\n      一个项目下创建标签最多200个，超出\
+        最大限制\n      HTTP Status Code: 400\n   #### eg:\n  ```\n  {\n   \"code\":\"\
+        MORETHANPROJECTTAGMAXNUM_ERR\",     \n   \"data\":{},\n   \"message\":\"A\
+        \ maximum of 200 labels can be created for a project.\"\n  }\n  ```\n+ ###\
+        \ PROJECTANDDOMAINISNOTCORRESPONDENCE_ERR\n      参数错误，项目不属于该部门\n      HTTP\
+        \ Status Code: 400\n  #### eg:\n  ```\n  {\n   \"code\":\"PROJECTANDDOMAINISNOTCORRESPONDENCE_ERR\"\
+        ,     \n   \"data\":{},\n   \"message\":\"The project passed in does not belong\
+        \ to the domain.\"\n  }\n  ```\n+ ## PARAM_ERR\n      参数错误，请求参数不符合要求\n   \
+        \   HTTP Status Code: 422\n  #### eg:\n  ```\n  {\n   \"code\":\"PARAM_ERR\"\
+        ,     \n   \"data\":{},\n   \"message\":\"error message\"\n  }\n  ```\n+ ##\
+        \ CREATETAG_ERR\n      创建标签失败\n      HTTP Status Code: 400\n  #### eg:\n \
+        \ ```\n  {\n   \"code\":\"CREATETAG_ERR\",     \n   \"data\":{},\n   \"message\"\
+        :\"Create Tag Fail.\"\n  }\n  ```"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "tags"
+        description: "一个新的标签信息"
+        required: true
+        schema:
+          $ref: "#/definitions/model.TagCreateReq"
+        x-exportParamName: "Tags"
+      responses:
+        "201":
+          description: "创建成功"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  $ref: "#/definitions/model.TagCreateRes"
+        "400":
+          description: "创建失败"
+          schema:
+            $ref: "#/definitions/model.TagCreateErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+    delete:
+      tags:
+      - "Tag"
+      summary: "批量删除标签"
+      description: "# 删除标签\n## Errors\n+ ## DELETETAG_ERR\n      删除标签失败\n      HTTP\
+        \ Status Code: 400\n  #### eg:\n  ```\n  {\n   \"code\":\"DELETETAG_ERR\"\
+        ,     \n   \"message\":\"Delete Tag Fail.\"\n   \"data\":[\n           {\"\
+        tag\":\"tagtest1\",\n            \"id\":\"tagid1\",\n            \"fail_reason\"\
+        ：\"Tag Not Found.\"},\n           {\"tag\":\"tagtest2\",\n            \"id\"\
+        :\"tagid2\",\n            \"fail_reason\"：\"This label is being manipulated\
+        \ by another user.\"},\n           {\"tag\":\"tagtest3\",\n            \"\
+        id\":\"tagid3\",\n            \"fail_reason\"：\"Delete Tag Fail.\"},\n   \
+        \       ]\n  }\n  ```"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "tags"
+        description: "一组标签信息"
+        required: true
+        schema:
+          $ref: "#/definitions/model.TagDeleteReq"
+        x-exportParamName: "Tags"
+      responses:
+        "204":
+          description: "删除成功"
+        "400":
+          description: "删除失败"
+          schema:
+            allOf:
+            - $ref: "#/definitions/model.TagDeleteTagsErrRes"
+            - type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/model.TagDeleteTagsDataErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+  /tags/{tag_id}:
+    get:
+      tags:
+      - "Tag"
+      summary: "获取单个标签"
+      description: "获取单个标签"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tag_id"
+        in: "path"
+        description: "标签id"
+        required: true
+        type: "string"
+        x-exportParamName: "TagId"
+      - name: "res_num"
+        in: "query"
+        description: "标签绑定资源数"
+        required: false
+        type: "boolean"
+        default: false
+        x-exportParamName: "ResNum"
+        x-optionalDataType: "Bool"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            allOf:
+            - $ref: "#/definitions/response.JsonResponse"
+            - type: "object"
+              properties:
+                data:
+                  $ref: "#/definitions/model.TagGetRes"
+        "400":
+          description: "获取标签失败"
+          schema:
+            $ref: "#/definitions/model.TagGetErrRes"
+        "401":
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/response.AuthErrRes"
+        "422":
+          description: "参数错误"
+          schema:
+            $ref: "#/definitions/response.ParamsErrRes"
+securityDefinitions:
+  ApiKeyAuth:
+    type: "apiKey"
+    name: "cookie"
+    in: "header"
+definitions:
+  model.DepartmentGetDomainRes:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+      enabled:
+        type: "boolean"
+      id:
+        type: "string"
+      name:
+        type: "string"
+  model.DepartmentGetDomainsErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "GETDOMAINS_ERR"
+      message:
+        type: "string"
+        example: "Get Domains Fail."
+  model.DepartmentGetProjectRes:
+    type: "object"
+    properties:
+      domain_id:
+        type: "string"
+      enabled:
+        type: "boolean"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      parent_id:
+        type: "string"
+  model.DepartmentGetProjectsErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "GETPROJECTS_ERR"
+      message:
+        type: "string"
+        example: "Get Projects Fail. Domain id: domainId"
+  model.ResourceBoundOrUnBoundTagReq:
+    type: "object"
+    required:
+    - "resource"
+    properties:
+      resource:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceBoundOrUnBoundTagReqData"
+  model.ResourceBoundOrUnBoundTagReqData:
+    type: "object"
+    required:
+    - "id"
+    - "name"
+    - "project_id"
+    - "resource_type"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      project_id:
+        type: "string"
+      resource_type:
+        type: "string"
+      tags_bound:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceBoundOrUnBoundTagReqTagData"
+      tags_unbound:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceBoundOrUnBoundTagReqTagData"
+  model.ResourceBoundOrUnBoundTagReqTagData:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+      id:
+        type: "string"
+      tag:
+        type: "string"
+  model.ResourceBoundOrUnboundTagErrList:
+    type: "object"
+    properties:
+      error_reason:
+        type: "string"
+        example: "Bound Or UnBound Fail."
+      error_resource:
+        type: "string"
+        example: "resouce1"
+      error_resource_type:
+        type: "string"
+        example: "OS_Tag"
+      error_tags:
+        type: "string"
+        example: "[tagtest1,tagtest2]"
+  model.ResourceBoundOrUnboundTagErrResponse:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "BOUNDORUNBOUNDTAG_ERR"
+      data:
+        type: "object"
+        properties: {}
+      message:
+        type: "string"
+        example: "Bound Or UnBound Tag Fail."
+  model.ResourceGetBoundTagReq:
+    type: "object"
+    required:
+    - "resource"
+    properties:
+      resource:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceGetBoundTagReqResData"
+  model.ResourceGetBoundTagReqResData:
+    type: "object"
+    required:
+    - "id"
+    - "name"
+    - "project_id"
+    - "resource_type"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      project_id:
+        type: "string"
+      resource_type:
+        type: "string"
+  model.ResourceGetBoundTagsData:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+      id:
+        type: "string"
+      tag:
+        type: "string"
+  model.ResourceGetBoundTagsRes:
+    type: "object"
+    properties:
+      custom_tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceGetBoundTagsData"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      project_id:
+        type: "string"
+      resource_type:
+        type: "string"
+  model.ResourceSearchErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "GETRESOURCE_ERR"
+      message:
+        type: "string"
+        example: "Get Resource Fail."
+  model.ResourceSearchReq:
+    type: "object"
+    required:
+    - "project"
+    - "resource_type"
+    properties:
+      domain:
+        type: "string"
+      project:
+        type: "string"
+      resource_type:
+        type: "array"
+        items:
+          type: "string"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceSearchReqTagData"
+  model.ResourceSearchReqTagData:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+  model.ResourceSearchRes:
+    type: "object"
+    properties:
+      custom_tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.ResourceSearchResTagData"
+      domain_id:
+        type: "string"
+      domain_name:
+        type: "string"
+      id:
+        type: "string"
+      link:
+        type: "string"
+      multiLanguage:
+        $ref: "#/definitions/model.ResourceSearchResMultiLanguage"
+      name:
+        type: "string"
+      project_id:
+        type: "string"
+      project_name:
+        type: "string"
+      resource_type:
+        type: "string"
+  model.ResourceSearchResMultiLanguage:
+    type: "object"
+    properties:
+      belong_en:
+        type: "string"
+      belong_zh_cn:
+        type: "string"
+      name_en:
+        type: "string"
+      name_zh_cn:
+        type: "string"
+  model.ResourceSearchResTagData:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+      id:
+        type: "string"
+      tag:
+        type: "string"
+  model.TagCreateErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "CREATETAG_ERR"
+      message:
+        type: "string"
+        example: "Create Tag Fail."
+  model.TagCreateReq:
+    type: "object"
+    required:
+    - "tag"
+    properties:
+      tag:
+        $ref: "#/definitions/model.TagCreateReqTagInfo"
+  model.TagCreateReqTagInfo:
+    type: "object"
+    required:
+    - "color"
+    - "key"
+    - "visibility"
+    properties:
+      color:
+        type: "string"
+        example: "#111111"
+      domain_id:
+        type: "string"
+        example: "domain1"
+      key:
+        type: "string"
+        example: "newTagName"
+      project_id:
+        type: "string"
+        example: "project1"
+      value:
+        type: "string"
+      visibility:
+        type: "string"
+        example: "display"
+  model.TagCreateRes:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+        example: "#00000"
+        description: "标签颜色"
+      create_time:
+        type: "string"
+        example: "2006-01-02T15:04:05Z"
+        description: "标签创建时间"
+      domain_id:
+        type: "string"
+        example: "default"
+        description: "标签部门id"
+      domain_name:
+        type: "string"
+        example: "Default"
+        description: "标签部门名字"
+      id:
+        type: "string"
+        example: "1dasdadsa1dasdad"
+        description: "标签id"
+      project_id:
+        type: "string"
+        example: "2rsdadadq1dasdad"
+        description: "标签项目id"
+      project_name:
+        type: "string"
+        example: "admin"
+        description: "标签项目名字"
+      res_num:
+        type: "integer"
+        example: 0
+        description: "标签绑定资源数"
+      tag:
+        type: "string"
+        example: "TagTest"
+        description: "标签名"
+  model.TagDeleteReq:
+    type: "object"
+    required:
+    - "tags"
+    properties:
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/model.TagDeleteReqData"
+  model.TagDeleteReqData:
+    type: "object"
+    required:
+    - "color"
+    - "domain_id"
+    - "id"
+    - "project_id"
+    - "tag"
+    properties:
+      color:
+        type: "string"
+      domain_id:
+        type: "string"
+      id:
+        type: "string"
+      project_id:
+        type: "string"
+      tag:
+        type: "string"
+  model.TagDeleteTagsDataErrRes:
+    type: "object"
+    properties:
+      fail_reason:
+        type: "string"
+        example: "This label is being manipulated by another user."
+      id:
+        type: "string"
+        example: "tagid"
+      tag:
+        type: "string"
+        example: "TagTest"
+  model.TagDeleteTagsErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "DELETETAG_ERR"
+      data:
+        type: "object"
+        properties: {}
+      message:
+        type: "string"
+        example: "Delete Tag Fail."
+  model.TagGetErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "GETTAG_ERR"
+      message:
+        type: "string"
+        example: "Get Tag Fail."
+  model.TagGetRes:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+        example: "#00000"
+        description: "标签颜色"
+      create_time:
+        type: "string"
+        example: "2006-01-02T15:04:05Z"
+        description: "标签创建时间"
+      domain_id:
+        type: "string"
+        example: "default"
+        description: "标签部门id"
+      domain_name:
+        type: "string"
+        example: "Default"
+        description: "标签部门名字"
+      id:
+        type: "string"
+        example: "1dasdadsa1dasdad"
+        description: "标签id"
+      project_id:
+        type: "string"
+        example: "2rsdadadq1dasdad"
+        description: "标签项目id"
+      project_name:
+        type: "string"
+        example: "admin"
+        description: "标签项目名字"
+      res_num:
+        type: "integer"
+        example: 0
+        description: "标签绑定资源数"
+      tag:
+        type: "string"
+        example: "TagTest"
+        description: "标签名"
+  model.TrtsGetErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "GETRESOURCETYPES_ERR"
+      message:
+        type: "string"
+        example: "Get Tag Resource Types Fail."
+  model.TrtsGetMultiLanguage:
+    type: "object"
+    properties:
+      belong_en:
+        type: "string"
+      belong_zh_cn:
+        type: "string"
+        description: "中文所属"
+      category_en:
+        type: "string"
+      category_zh_cn:
+        type: "string"
+      description_en:
+        type: "string"
+      description_zh_cn:
+        type: "string"
+      name_en:
+        type: "string"
+        description: "英文名字"
+      name_zh_cn:
+        type: "string"
+        description: "中文名字"
+  model.TrtsGetRes:
+    type: "object"
+    properties:
+      belong:
+        type: "string"
+        description: "所属模块"
+      category:
+        type: "string"
+      create_time:
+        type: "string"
+        description: "创建时间"
+      description:
+        type: "string"
+      link:
+        type: "string"
+        description: "跳转链接"
+      multilanguage:
+        $ref: "#/definitions/model.TrtsGetMultiLanguage"
+      name:
+        type: "string"
+        description: "资源类型"
+  response.AuthErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "AUTH_ERR"
+        description: "错误代码"
+      message:
+        type: "string"
+        description: "提示信息"
+  response.JsonResponse:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        description: "返回数据"
+        properties: {}
+  response.ParamsErrRes:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "PARAM_ERR"
+        description: "错误代码"
+      message:
+        type: "string"
+        description: "提示信息"
