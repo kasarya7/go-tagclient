@@ -1,4 +1,4 @@
-# \TagApi
+# TagApi
 
 All URIs are relative to *https://localhost/apis/tag-api/*
 
@@ -14,7 +14,28 @@ Method | HTTP request | Description
 > TagsDelete(ctx, tags)
 批量删除标签
 
-# 删除标签 ## Errors + ## DELETETAG_ERR       删除标签失败       HTTP Status Code: 400   #### eg:   ```   {    \"code\":\"DELETETAG_ERR\",         \"message\":\"Delete Tag Fail.\"    \"data\":[            {\"tag\":\"tagtest1\",             \"id\":\"tagid1\",             \"fail_reason\"：\"Tag Not Found.\"},            {\"tag\":\"tagtest2\",             \"id\":\"tagid2\",             \"fail_reason\"：\"This label is being manipulated by another user.\"},            {\"tag\":\"tagtest3\",             \"id\":\"tagid3\",             \"fail_reason\"：\"Delete Tag Fail.\"},           ]   }   ```
+删除标签 
+## Errors 
+## DELETETAG_ERR       
+    删除标签失败       
+    HTTP Status Code: 400   
+    eg:   
+        {    
+            "code":"DELETETAG_ERR",         
+            "message":"Delete Tag Fail."    
+            "data":[
+                    {"tag":"tagtest1",
+                     "id":"tagid1",
+                     "fail_reason"："Tag Not Found. 
+                     "},
+                    {"tag":"tagtest2",
+                     "id":"tagid2",
+                     "fail_reason"："This label is being manipulated by another user."},
+                    {"tag":"tagtest3",
+                     "id":"tagid3", 
+                     "fail_reason"："Delete Tag Fail."},
+                   ]
+        }   
 
 ### Required Parameters
 
@@ -25,7 +46,10 @@ Name | Type | Description  | Notes
 
 ### Return type
 
- (empty response body)
+HttpCode | Body| Description  | 
+------------- | ------------- | ------------- |
+204 |  | 删除成功|
+400 |[**ModelTagDeleteTagsErrRes**](ModelTagDeleteTagsErrRes.md)|删除失败|
 
 ### Authorization
 
@@ -39,7 +63,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **TagsGet**
-> interface{} TagsGet(ctx, optional)
+>  TagsGet(ctx, optional)
 获取标签列表
 
 获取标签列表 (根据条件过滤标签)
@@ -64,8 +88,12 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**interface{}**
-
+HttpCode | Response| Description  | 
+------------- | ------------- | ------------- |
+200 |[**ModelTagGetRes**](ModelTagGetRes.md) | 获取标签成功|
+400 |[**ModelTagGetErrRes**](ModelTagGetErrRes.md)|获取标签失败|
+401 |[**ResponseAuthErrRes**](ResponseAuthErrRes.md)|认证失败|
+422 |[**ResponseParamsErrRes**](ResponseParamsErrRes.md)|参数错误|
 ### Authorization
 
 No authorization required
@@ -78,10 +106,57 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **TagsPost**
-> interface{} TagsPost(ctx, tags)
+> TagsPost(ctx, tags)
 创建标签
 
-# 创建一个新的标签 ## Errors + ## TAGALREADYEXISTS_ERR       要创建的标签已经存在       HTTP Status Code: 400   #### eg:   ```   {    \"code\":\"TAGALREADYEXISTS_ERR\",         \"message\":\"Conflict TagTest already exists.\"   }   ``` + ### MORETHANPROJECTTAGMAXNUM_ERR       一个项目下创建标签最多200个，超出最大限制       HTTP Status Code: 400    #### eg:   ```   {    \"code\":\"MORETHANPROJECTTAGMAXNUM_ERR\",         \"data\":{},    \"message\":\"A maximum of 200 labels can be created for a project.\"   }   ``` + ### PROJECTANDDOMAINISNOTCORRESPONDENCE_ERR       参数错误，项目不属于该部门       HTTP Status Code: 400   #### eg:   ```   {    \"code\":\"PROJECTANDDOMAINISNOTCORRESPONDENCE_ERR\",         \"data\":{},    \"message\":\"The project passed in does not belong to the domain.\"   }   ``` + ## PARAM_ERR       参数错误，请求参数不符合要求       HTTP Status Code: 422   #### eg:   ```   {    \"code\":\"PARAM_ERR\",         \"data\":{},    \"message\":\"error message\"   }   ``` + ## CREATETAG_ERR       创建标签失败       HTTP Status Code: 400   #### eg:   ```   {    \"code\":\"CREATETAG_ERR\",         \"data\":{},    \"message\":\"Create Tag Fail.\"   }   ```
+创建一个新的标签 
+## Errors 
+## TAGALREADYEXISTS_ERR       
+    要创建的标签已经存在       
+    HTTP Status Code: 400   
+#### eg:  
+    {    
+        "code":"TAGALREADYEXISTS_ERR",
+        "message":"Conflict TagTest already exists."
+    }   
+
+### MORETHANPROJECTTAGMAXNUM_ERR
+    一个项目下创建标签最多200个，超出最大限制         
+    HTTP Status Code: 400    
+#### eg:  
+    {    
+        "code":"MORETHANPROJECTTAGMAXNUM_ERR",
+         "data":{},
+         "message":"A maximum of 200 labels can be created for a project."
+    }   
+### PROJECTANDDOMAINISNOTCORRESPONDENCE_ERR       
+    参数错误，项目不属于该部门       
+    HTTP Status Code: 400   
+#### eg:   
+       {    
+        "code":"PROJECTANDDOMAINISNOTCORRESPONDENCE_ERR",
+        "data":{},
+        "message":"The project passed in does not belong to the domain."
+       }   
+### PARAM_ERR       
+    参数错误，请求参数不符合要求       
+    HTTP Status Code: 422   
+#### eg:   
+       {    
+        "code":"PARAM_ERR",
+        "data":{},
+        "message":"error message"   
+       }
+
+### CREATETAG_ERR       
+    创建标签失败       
+    HTTP Status Code: 400   
+#### eg: 
+        {
+          "code":"CREATETAG_ERR",
+          "data":{},
+          "message":"Create Tag Fail." 
+        }  
 
 ### Required Parameters
 
@@ -106,7 +181,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **TagsTagIdGet**
-> interface{} TagsTagIdGet(ctx, tagId, optional)
+> TagsTagIdGet(ctx, tagId, optional)
 获取单个标签
 
 获取单个标签
@@ -124,7 +199,6 @@ Optional parameters are passed through a pointer to a TagApiTagsTagIdGetOpts str
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
-
  **resNum** | **optional.Bool**| 标签绑定资源数 | [default to false]
 
 ### Return type

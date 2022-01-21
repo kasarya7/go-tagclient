@@ -18,7 +18,20 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**interface{}**
+**200**
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Description** | **string** |  | [optional] [default to null]
+**Enabled** | **bool** |  | [optional] [default to null]
+**Id** | **string** |  | [optional] [default to null]
+**Name** | **string** |  | [optional] [default to null]
+**400/401**
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Code** | **string** |  | [optional] [default to null]
+**Message** | **string** |  | [optional] [default to null]
 
 ### Authorization
 
